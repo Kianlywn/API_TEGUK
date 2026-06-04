@@ -72,13 +72,25 @@ builder.Services.AddScoped<
     IHealthExpertService,
     HealthExpertService>();
 
-builder.Services.AddDbContext<AppDbContext>(
-options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(
-        builder.Configuration
-        .GetConnectionString(
-            "DefaultConnection"));
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+    string connectionString;
+
+    if (databaseUrl != null)
+    {
+        // Format Railway: postgresql://user:pass@host:port/db
+        var uri = new Uri(databaseUrl);
+        var userInfo = uri.UserInfo.Split(':');
+        connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    else
+    {
+        // Fallback ke appsettings.json (untuk dev lokal)
+        connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+    }
+
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services
