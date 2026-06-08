@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Teguk_API.DTOs;
@@ -22,7 +22,7 @@ namespace Teguk_API.Controllers
         }
 
         [HttpGet("profile")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,HealthExpert")]
         public async Task<IActionResult>
             GetProfile()
         {
@@ -40,7 +40,7 @@ namespace Teguk_API.Controllers
         }
 
         [HttpPut("profile")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,HealthExpert")]
         public async Task<IActionResult>
             UpdateProfile(
             UpdateProfileDto dto)

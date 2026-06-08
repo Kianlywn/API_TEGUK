@@ -1,4 +1,4 @@
-﻿using Teguk_API.DTOs;
+using Teguk_API.DTOs;
 
 namespace Teguk_API.Interfaces
 {
@@ -20,7 +20,10 @@ namespace Teguk_API.Interfaces
 
         Task<object>
            GetMyConsultations(
-               Guid accountId,
-               string role);
+               Guid accountId);
+
+        Task<object>
+           GetIncomingConsultations(
+               Guid expertId);
     }
 }

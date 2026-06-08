@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Teguk_API.DTOs;
@@ -85,27 +85,42 @@ namespace Teguk_API.Controllers
         [HttpGet("my-consultations")]
         public async Task<IActionResult>
         MyConsultations()
-            {
-                var userId =
-                    Guid.Parse(
-                    User.FindFirst(
-                        ClaimTypes
-                        .NameIdentifier)
-                    ?.Value);
+        {
+            var userId =
+                Guid.Parse(
+                User.FindFirst(
+                    ClaimTypes
+                    .NameIdentifier)
+                ?.Value);
 
-                var role =
-                    User.FindFirst(
-                        ClaimTypes.Role)
-                    ?.Value;
+            var result =
+                await
+                _consultationService
+                .GetMyConsultations(
+                    userId);
 
-                var result =
-                    await
-                    _consultationService
-                    .GetMyConsultations(
-                        userId,
-                        role);
+            return Ok(result);
+        }
 
-                return Ok(result);
-            }
+        [HttpGet("incoming-consultations")]
+        [Authorize(Roles = "HealthExpert")]
+        public async Task<IActionResult>
+        IncomingConsultations()
+        {
+            var expertId =
+                Guid.Parse(
+                User.FindFirst(
+                    ClaimTypes
+                    .NameIdentifier)
+                ?.Value);
+
+            var result =
+                await
+                _consultationService
+                .GetIncomingConsultations(
+                    expertId);
+
+            return Ok(result);
+        }
     }
 }

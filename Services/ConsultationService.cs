@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Teguk_API.Data;
 using Teguk_API.DTOs;
 using Teguk_API.Interfaces;
@@ -112,59 +112,60 @@ namespace Teguk_API.Services
 
         public async Task<object>
         GetMyConsultations(
-        Guid accountId,
-        string role)
-            {
-                if (role == "User")
-                {
-                    return await _context
-                        .Consultations
-                        .Include(x => x.Expert)
-                        .Where(x =>
-                            x.UserId
-                            == accountId)
-                        .Select(x =>
-                            new
-                            {
-                                consultationId =
-                                    x.Id,
+        Guid accountId)
+        {
+            return await _context
+                .Consultations
+                .Include(x => x.Expert)
+                .Where(x =>
+                    x.UserId
+                    == accountId)
+                .Select(x =>
+                    new
+                    {
+                        consultationId =
+                            x.Id,
 
-                                expertName =
-                                    x.Expert
-                                    .FullName,
+                        expertName =
+                            x.Expert
+                            .FullName,
 
-                                status =
-                                    x.Status,
+                        status =
+                            x.Status,
 
-                                createdAt =
-                                    x.CreatedAt
-                            })
-                        .ToListAsync();
-                }
+                        createdAt =
+                            x.CreatedAt
+                    })
+                .ToListAsync();
+        }
 
-                return await _context
-                    .Consultations
-                    .Include(x => x.User)
-                    .Where(x =>
-                        x.ExpertId
-                        == accountId)
-                    .Select(x =>
-                        new
-                        {
-                            consultationId =
-                                x.Id,
+        public async Task<object>
+        GetIncomingConsultations(
+        Guid expertId)
+        {
+            return await _context
+                .Consultations
+                .Include(x => x.User)
+                .Where(x =>
+                    x.ExpertId
+                    == expertId)
+                .Select(x =>
+                    new
+                    {
+                        consultationId =
+                            x.Id,
 
-                            userName =
-                                x.User
-                                .FullName,
+                        userName =
+                            x.User
+                            .FullName,
 
-                            status =
-                                x.Status,
+                        status =
+                            x.Status,
 
-                            createdAt =
-                                x.CreatedAt
-                        })
-                    .ToListAsync();
-            }
+                        createdAt =
+                            x.CreatedAt
+                    })
+                .ToListAsync();
+        }
     }
 }
